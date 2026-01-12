@@ -17,8 +17,7 @@ export default async function middleware(request: NextRequest) {
   // if the user is uauthenticated
   if (!tokenPayload) {
     // and trying to get into auth routes
-    // or root route(root route has a public version alongside private version)
-    if (authRoutes.includes(pathname) || pathname === "/") {
+    if (authRoutes.includes(pathname)) {
       // let the user go
       return NextResponse.next();
     } else {

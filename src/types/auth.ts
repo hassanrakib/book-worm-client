@@ -1,3 +1,5 @@
+import { TUserRole } from "./user";
+
 export interface ILoginCredentials {
   email: string;
   password: string;
@@ -5,4 +7,5 @@ export interface ILoginCredentials {
 
 export interface ITokenPayload {
   userId: string;
+  role: TUserRole;
 }
