@@ -3,12 +3,12 @@
 import { useRef } from "react";
 import { Provider as StoreProvider } from "react-redux";
 import { AppStore, makeStore } from "./store";
-import { setSession } from "./features/auth/auth.slice";
+import { setToken } from "./features/auth/auth.slice";
 
 export function Provider({
-  session,
+  token,
   children,
-}: Readonly<{ session: string | undefined; children: React.ReactNode }>) {
+}: Readonly<{ token: string | undefined; children: React.ReactNode }>) {
   const storeRef = useRef<AppStore | null>(null);
 
   if (!storeRef.current) {
@@ -16,9 +16,9 @@ export function Provider({
     storeRef.current = makeStore();
 
     // if user is logged in
-    // initialize the store with session
-    if (session) {
-      storeRef.current.dispatch(setSession(session));
+    // initialize the store with token
+    if (token) {
+      storeRef.current.dispatch(setToken(token));
     }
   }
   return <StoreProvider store={storeRef.current}>{children}</StoreProvider>;

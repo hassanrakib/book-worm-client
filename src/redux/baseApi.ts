@@ -8,12 +8,12 @@ export const baseApi = createApi({
     baseUrl: envConfig.baseApi,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
-      // get the session from redux store
-      const session = (getState() as RootState).auth.session;
+      // get the token from redux store
+      const token = (getState() as RootState).auth.token;
 
-      // if session found attach session in the headers
-      if (session) {
-        headers.set("authorization", `Bearer ${session}`);
+      // if token found attach token in the headers
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
       }
 
       return headers;
