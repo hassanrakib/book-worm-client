@@ -9,7 +9,7 @@ import { IUser } from "@/types/user";
 import { Card, Flex, Text, Link as ChakraLink } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AtSign, LockKeyhole, Mail } from "lucide-react";
+import { UserRound, LockKeyhole, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UseFormReset } from "react-hook-form";
 import SubmitButton from "@/components/form/submit-button";
@@ -71,8 +71,9 @@ const SignUp = () => {
           <Card.Body gap={3}>
             <StyledInput
               name="name"
-              placeholder="Name"
+              placeholder="Full Name"
               type="text"
+              startElement={<UserRound size={18} />}
             />
             <StyledInput
               name="email"

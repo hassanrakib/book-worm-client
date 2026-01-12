@@ -5,7 +5,7 @@ import {
   Link as ChakraLink,
   LinkProps as ChakraLinkProps,
 } from "@chakra-ui/react";
-import { CircleFadingArrowUp } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import NextLink from "next/link";
 
 const BookWormLogo = (props: Omit<ChakraLinkProps, "href">) => {
@@ -17,7 +17,7 @@ const BookWormLogo = (props: Omit<ChakraLinkProps, "href">) => {
             Book Worm
           </Text>
           <Icon boxSize={7} color="yellow.400">
-            <CircleFadingArrowUp />
+            <BookOpen />
           </Icon>
         </Flex>
       </NextLink>
