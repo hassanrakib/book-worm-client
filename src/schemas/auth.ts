@@ -24,3 +24,8 @@ export const userSignupSchema = z.object({
       message: "Password must be strong",
     }),
 });
+
+export const userSigninSchema = z.object({
+  email: z.string().trim().toLowerCase().min(1, "Email is required"),
+  password: z.string().min(1, "Password is required"),
+});

@@ -16,15 +16,20 @@ import SubmitButton from "@/components/form/submit-button";
 import BookWormLogo from "@/components/shared/book-worm-logo";
 import { toaster } from "@/components/ui/toaster";
 import FileInput from "@/components/form/file-input";
+import { isFetchBaseQueryErrorWithData } from "@/redux/helpers";
 
-type IFormValues = Pick<IUser, "name" | "email" | "password"> & {profilePhoto: File[]};
+type IFormValues = Pick<IUser, "name" | "email" | "password"> & {
+  profilePhoto: File[];
+};
 
 const SignUp = () => {
   // router from next/navigation
   const router = useRouter();
 
-  const [registerUser, { isLoading: isRegisteringUser, error: registerUserError }] =
-    useRegisterUserMutation();
+  const [
+    registerUser,
+    { isLoading: isRegisteringUser, error: registerUserError },
+  ] = useRegisterUserMutation();
 
   // default values for the register form
   const defaultValues: IFormValues = {
@@ -38,7 +43,6 @@ const SignUp = () => {
     data: IFormValues,
     reset: UseFormReset<IFormValues>
   ) => {
-
     const formData = new FormData();
 
     // 1. Extract the file from the array
@@ -57,6 +61,8 @@ const SignUp = () => {
     formData.append("data", JSON.stringify(userData));
 
     const result = await registerUser(formData);
+
+    console.log("Error from here", result.error);
 
     // after successful submission
     if (result.data?.data) {
@@ -115,7 +121,11 @@ const SignUp = () => {
                 size="sm"
                 variant="outline"
                 status="error"
-                title="There was an error processing your request"
+                title={
+                  isFetchBaseQueryErrorWithData(registerUserError)
+                    ? registerUserError.data.message
+                    : "There was an error processing your request"
+                }
               />
             ) : null}
             <SubmitButton
