@@ -1,7 +1,6 @@
 import { sora } from "@/config/fonts";
 import Providers from "@/lib/provider";
 import type { Metadata } from "next";
-import "./global.css";
 import { Container } from "@chakra-ui/react";
 
 export const metadata: Metadata = {
