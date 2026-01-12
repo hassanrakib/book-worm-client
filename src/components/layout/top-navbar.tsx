@@ -60,9 +60,6 @@ export default function TopNavbar() {
       <BookWormLogo hideFrom="lg" />
       {/* Notification Icon */}
       <Flex align="center" gap={4}>
-        <IconButton aria-label="Notifications" variant="ghost" rounded="full">
-          <BellIcon />
-        </IconButton>
         {/* Avatar */}
         <StyledPopover
           triggerElement={
