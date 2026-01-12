@@ -10,7 +10,6 @@ import { useAppDispatch } from "@/redux/hooks";
 import { deleteToken } from "@/services/auth";
 import { decodeToken } from "@/utils/auth";
 import { Flex, GridItem, IconButton, Text } from "@chakra-ui/react";
-import { BellIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGetMeQuery } from "@/redux/features/user/user.api";
 import { IUser } from "@/types/user";
@@ -28,13 +27,9 @@ export default function TopNavbar() {
   // decrypt the token
   const tokenPayload = decodeToken(token);
 
-  let user: Omit<IUser, "password"> | undefined;
+  const { data } = useGetMeQuery(undefined, { skip: !tokenPayload });
 
-  if (tokenPayload) {
-    const { data } = useGetMeQuery(undefined);
-
-    user = data?.data;
-  }
+  const user = data?.data;
 
   const handleSignout = async () => {
     // delete the "token" cookie
