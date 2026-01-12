@@ -51,7 +51,6 @@ const FileInput = <T extends FieldValues>({
 
   return (
     <Field
-      label={label}
       invalid={Boolean(getHookFormError(errors, name))}
       errorText={getHookFormError(errors, name)?.message}
     >
@@ -70,7 +69,7 @@ const FileInput = <T extends FieldValues>({
             <FileUpload.HiddenInput />
 
             <FileUpload.Trigger asChild>
-              <StyledButton>
+              <StyledButton variant="outline" size="sm">
                 <LuFileImage /> {label}
               </StyledButton>
             </FileUpload.Trigger>

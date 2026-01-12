@@ -6,12 +6,12 @@ const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     registerUser: build.mutation<
       IResponse<Omit<IUser, "password">>,
-      Pick<IUser, "name" | "email" | "password">
+      FormData
     >({
-      query: (user) => ({
+      query: (formData) => ({
         url: "/auth/register",
         method: "POST",
-        body: user,
+        body: formData,
       }),
     }),
   }),

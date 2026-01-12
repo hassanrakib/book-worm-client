@@ -38,7 +38,25 @@ const SignUp = () => {
     data: IFormValues,
     reset: UseFormReset<IFormValues>
   ) => {
-    const result = await registerUser(data);
+
+    const formData = new FormData();
+
+    // 1. Extract the file from the array
+    if (data.profilePhoto && data.profilePhoto.length > 0) {
+      formData.append("image", data.profilePhoto[0]);
+    }
+
+    // 2. Prepare the text data (excluding the file)
+    const userData = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
+
+    // 3. Append the stringified data as a text field named 'data'
+    formData.append("data", JSON.stringify(userData));
+
+    const result = await registerUser(formData);
 
     // after successful submission
     if (result.data?.data) {
@@ -71,7 +89,7 @@ const SignUp = () => {
           }}
         >
           <Card.Body gap={3}>
-            <FileInput label="Upload Profile Photo" name="profilePhoto" />
+            <FileInput label="Upload Photo" name="profilePhoto" />
             <StyledInput
               name="name"
               placeholder="Full Name"
