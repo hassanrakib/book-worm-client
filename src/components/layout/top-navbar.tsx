@@ -12,6 +12,8 @@ import { decodeToken } from "@/utils/auth";
 import { Flex, GridItem, IconButton, Text } from "@chakra-ui/react";
 import { BellIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useGetMeQuery } from "@/redux/features/user/user.api";
+import { IUser } from "@/types/user";
 
 export default function TopNavbar() {
   // next.js router
@@ -25,6 +27,14 @@ export default function TopNavbar() {
 
   // decrypt the token
   const tokenPayload = decodeToken(token);
+
+  let user: Omit<IUser, "password"> | undefined;
+
+  if (tokenPayload) {
+    const { data } = useGetMeQuery(undefined);
+
+    user = data?.data;
+  }
 
   const handleSignout = async () => {
     // delete the "token" cookie
@@ -57,15 +67,22 @@ export default function TopNavbar() {
         <StyledPopover
           triggerElement={
             <IconButton rounded="full" variant="plain">
-              <Avatar name={'User'} />
+              <Avatar
+                src={user?.profilePhoto || undefined}
+                name={user?.name || "User"}
+              />
             </IconButton>
           }
         >
           {/* popover content */}
           <Flex flexDir="column" alignItems="center">
-            <Avatar size="xl" name={'User'} />
+            <Avatar
+              size="xl"
+              src={user?.profilePhoto || undefined}
+              name={user?.name || "User"}
+            />
             <Text mt="1" fontSize="xl">
-              @{tokenPayload?.userId}
+              {user?.name || "User"}
             </Text>
             <StyledButton mt="5" alignSelf="stretch" onClick={handleSignout}>
               Sign out
