@@ -1,8 +1,9 @@
 import BookWormLogo from "@/components/shared/book-worm-logo";
 import { Box, VStack } from "@chakra-ui/react";
 import SidebarItems from "./sidebar-items";
+import { INavItem } from "@/components/layout";
 
-export default function Sidebar() {
+export default function Sidebar({ navItems }: {navItems: INavItem[]}) {
   return (
     <Box
       as="aside"
@@ -28,7 +29,7 @@ export default function Sidebar() {
         {/* Book Worm Logo */}
         <BookWormLogo />
         {/* Sidebar Items */}
-        <SidebarItems />
+        <SidebarItems navItems={navItems}/>
       </VStack>
     </Box>
   );

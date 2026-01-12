@@ -1,19 +1,6 @@
 import { Flex, Text, Icon, VStack } from "@chakra-ui/react";
-import { SquareLibrary } from "lucide-react";
 import Link from "next/link";
-
-// interface of nav item
-export interface INavItem {
-  id: number;
-  name: string;
-  icon: React.ReactNode;
-  href: string;
-}
-
-// nav items
-export const navItems: INavItem[] = [
-  { id: 1, name: "Manage Books", icon: <SquareLibrary />, href: "/manage-books" },
-];
+import { INavItem } from "@/components/layout";
 
 const SidebarItem = ({ navItem }: { navItem: INavItem }) => {
   const { name, icon, href } = navItem;
@@ -38,7 +25,7 @@ const SidebarItem = ({ navItem }: { navItem: INavItem }) => {
   );
 };
 
-const SidebarItems = () => {
+const SidebarItems = ({ navItems }: { navItems: INavItem[] }) => {
   return (
     <VStack gap={2} align="stretch">
       {navItems.map((item) => (

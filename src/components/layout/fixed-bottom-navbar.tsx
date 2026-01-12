@@ -1,10 +1,10 @@
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { navItems } from "./sidebar-items";
+import { INavItem } from "@/components/layout";
 
 // position fixed (relative to the viewport) always sticks to the bottom
 // hidden from "lg" breakpoint
-export default function FixedBottomNavbar() {
+export default function FixedBottomNavbar({ navItems } : {navItems: INavItem[]}) {
   return (
     <Flex
       as="nav"

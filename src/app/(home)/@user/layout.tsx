@@ -1,7 +1,7 @@
 import MainLayout, { INavItem } from "@/components/layout";
 import { SquareLibrary } from "lucide-react";
 
-const navItemsForAdmin: INavItem[] = [
+const navItemsForUser: INavItem[] = [
   {
     id: 1,
     name: "Manage Books",
@@ -15,5 +15,5 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return <MainLayout navItems={navItemsForAdmin}>{children}</MainLayout>;
+  return <MainLayout navItems={navItemsForUser}>{children}</MainLayout>;
 }
