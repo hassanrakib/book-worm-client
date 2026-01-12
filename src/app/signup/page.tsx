@@ -15,8 +15,9 @@ import { UseFormReset } from "react-hook-form";
 import SubmitButton from "@/components/form/submit-button";
 import BookWormLogo from "@/components/shared/book-worm-logo";
 import { toaster } from "@/components/ui/toaster";
+import FileInput from "@/components/form/file-input";
 
-type IFormValues = Pick<IUser, "name" | "email" | "password">;
+type IFormValues = Pick<IUser, "name" | "email" | "password"> & {profilePhoto: File[]};
 
 const SignUp = () => {
   // router from next/navigation
@@ -28,6 +29,7 @@ const SignUp = () => {
   // default values for the register form
   const defaultValues: IFormValues = {
     name: "",
+    profilePhoto: [],
     email: "",
     password: "",
   };
@@ -69,6 +71,7 @@ const SignUp = () => {
           }}
         >
           <Card.Body gap={3}>
+            <FileInput label="Upload Profile Photo" name="profilePhoto" />
             <StyledInput
               name="name"
               placeholder="Full Name"
