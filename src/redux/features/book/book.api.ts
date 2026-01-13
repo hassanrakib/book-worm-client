@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
 import { IBook } from "@/types/book";
-import { IResponse } from "@/types/global";
+import { IResponse, QueryParams } from "@/types/global";
 
 const bookApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -11,7 +11,14 @@ const bookApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    getBooks: build.query<IResponse<IBook[]>, QueryParams>({
+      query: (params) => ({
+        url: "/books",
+        method: "GET",
+        params,
+      }),
+    }),
   }),
 });
 
-export const { useCreateBookMutation } = bookApi;
+export const { useCreateBookMutation, useGetBooksQuery } = bookApi;

@@ -11,22 +11,24 @@ import { createBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
 import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Dispatch, SetStateAction } from "react";
 import { UseFormReset } from "react-hook-form";
 
 type IFormValues = Omit<
   IBook,
-  "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
+  "_id" | "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
 > & {
   category: string[];
   coverImage: File[];
 };
 
 interface AddBookFormDrawerProps {
+  setBooks: Dispatch<SetStateAction<IBook[]>>;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
+const AddBookFormDrawer = ({ isOpen, onClose, setBooks }: AddBookFormDrawerProps) => {
   // default values for the form
   const defaultValues: IFormValues = {
     title: "",
@@ -78,6 +80,8 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
       reset(defaultValues);
       // show a ui feedback
       toaster.create({ type: "info", description: "Successfully added book" });
+
+      setBooks((prevBooks) => ([(result.data.data as IBook), ...prevBooks]));
 
       // close the drawer
       onClose();
