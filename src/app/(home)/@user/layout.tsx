@@ -1,12 +1,12 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { SquareLibrary } from "lucide-react";
+import { BookCopy } from "lucide-react";
 
 const navItemsForUser: INavItem[] = [
   {
     id: 1,
-    name: "Manage Books",
-    icon: <SquareLibrary />,
-    href: "/manage-books",
+    name: "Books",
+    icon: <BookCopy />,
+    href: "/books",
   },
 ];
 
