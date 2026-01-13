@@ -5,9 +5,9 @@ import StyledNumberInput from "@/components/form/styled-number-input";
 import StyledSelect from "@/components/form/styled-select";
 import StyledTextArea from "@/components/form/styled-text-area";
 import { toaster } from "@/components/ui/toaster";
-import { useCreateBookMutation } from "@/redux/features/book/book.api";
+import { useUpdateBookByIdMutation } from "@/redux/features/book/book.api";
 import { useGetCategoriesQuery } from "@/redux/features/category/category.api";
-import { createBookSchema } from "@/schemas/book";
+import { updateBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
 import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,7 @@ type IFormValues = Omit<
   "_id" | "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
 > & {
   category: string[];
-  coverImage: File[];
+  coverImage?: File[];
 };
 
 interface EditBookFormDrawerProps {
@@ -39,7 +39,7 @@ const EditBookFormDrawer = ({
   const defaultValues: IFormValues = {
     title: selectedBookToEdit.title,
     author: selectedBookToEdit.author,
-    coverImage: [],
+    coverImage: undefined,
     category: [selectedBookToEdit.category._id],
     description: selectedBookToEdit.description,
     totalPages: selectedBookToEdit.totalPages,
@@ -53,7 +53,7 @@ const EditBookFormDrawer = ({
       [],
   });
 
-  const [addBook, { isLoading, error }] = useCreateBookMutation();
+  const [updateBookById, { isLoading, error }] = useUpdateBookByIdMutation();
 
   const onSubmit = async (
     data: IFormValues,
@@ -78,16 +78,26 @@ const EditBookFormDrawer = ({
     // 3. Append the stringified data as a text field named 'data'
     formData.append("data", JSON.stringify(bookData));
 
-    const result = await addBook(formData);
+    const result = await updateBookById({
+      bookId: selectedBookToEdit._id,
+      formData,
+    });
 
     // after successful submission
     if (result.data?.data) {
-      // reset the form
-      reset(defaultValues);
       // show a ui feedback
-      toaster.create({ type: "info", description: "Successfully added book" });
+      toaster.create({
+        type: "info",
+        description: "Successfully updated book",
+      });
 
-      setBooks((prevBooks) => [result.data.data as IBook, ...prevBooks]);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book._id === selectedBookToEdit._id
+            ? { ...book, ...(result.data?.data as IBook) }
+            : book
+        )
+      );
 
       // close the drawer
       onClose();
@@ -100,7 +110,7 @@ const EditBookFormDrawer = ({
       onSubmit={onSubmit}
       useFormProps={{
         defaultValues,
-        resolver: zodResolver(createBookSchema),
+        resolver: zodResolver(updateBookSchema),
       }}
       handleClose={onClose}
       isLoading={isLoading}
@@ -108,7 +118,11 @@ const EditBookFormDrawer = ({
       submitError={error}
     >
       <VStack gap="5" align="stretch">
-        <FileInput name="coverImage" label="Cover Image" />
+        <FileInput
+          name="coverImage"
+          label="Cover Image"
+          defaultUrl={selectedBookToEdit.coverImage}
+        />
         <StyledInput type="text" name="title" placeholder="Enter book title" />
         <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
           <StyledInput

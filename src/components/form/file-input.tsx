@@ -1,13 +1,18 @@
 "use client";
 
-import { FileUpload, Float, useFileUploadContext } from "@chakra-ui/react";
+import {
+  FileUpload,
+  Float,
+  useFileUploadContext,
+  Image,
+  Box,
+} from "@chakra-ui/react";
 import { LuFileImage, LuX } from "react-icons/lu";
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 import StyledButton from "../shared/styled-button";
 import { Field } from "../ui/field";
 import { getHookFormError } from "@/utils/form";
 
-// 1. Keep your List component the same
 const FileUploadList = () => {
   const fileUpload = useFileUploadContext();
   const files = fileUpload.acceptedFiles;
@@ -34,15 +39,16 @@ const FileUploadList = () => {
   );
 };
 
-// 2. Update props to include 'control'
 export interface FileInputProps<T extends FieldValues> {
   label: string;
   name: Path<T>;
+  defaultUrl?: string; // New optional prop
 }
 
 const FileInput = <T extends FieldValues>({
   label,
   name,
+  defaultUrl,
 }: FileInputProps<T>) => {
   const {
     control,
@@ -57,26 +63,47 @@ const FileInput = <T extends FieldValues>({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
-          <FileUpload.Root
-            name={field.name}
-            accept={["image/*"]}
-            maxFiles={1}
-            // Update RHF state when files change
-            onFileChange={(details) => field.onChange(details.acceptedFiles)}
-          >
-            {/* Chakra handles the actual input node */}
-            <FileUpload.HiddenInput />
+        render={({ field }) => {
+          // Check if user has selected any new files
+          const hasNewSelection = field.value && field.value.length > 0;
 
-            <FileUpload.Trigger asChild>
-              <StyledButton variant="outline" size="sm">
-                <LuFileImage /> {label}
-              </StyledButton>
-            </FileUpload.Trigger>
+          return (
+            <FileUpload.Root
+              name={field.name}
+              accept={["image/*"]}
+              maxFiles={1}
+              onFileChange={(details) => field.onChange(details.acceptedFiles)}
+            >
+              <FileUpload.HiddenInput />
+              <FileUpload.Trigger asChild>
+                <StyledButton variant="outline" size="sm">
+                  <LuFileImage /> {label}
+                </StyledButton>
+              </FileUpload.Trigger>
 
-            <FileUploadList />
-          </FileUpload.Root>
-        )}
+              {/* Show default image preview only if no new file is selected */}
+              {!hasNewSelection && defaultUrl && (
+                <Box
+                  mb="2"
+                  position="relative"
+                  boxSize="20"
+                  borderWidth="1px"
+                  rounded="md"
+                  overflow="hidden"
+                >
+                  <Image
+                    src={defaultUrl}
+                    alt="Default image"
+                    objectFit="cover"
+                    boxSize="full"
+                  />
+                </Box>
+              )}
+
+              <FileUploadList />
+            </FileUpload.Root>
+          );
+        }}
       />
     </Field>
   );

@@ -18,7 +18,21 @@ const bookApi = baseApi.injectEndpoints({
         params,
       }),
     }),
+    updateBookById: build.mutation<
+      IResponse<IBook>,
+      { bookId: string; formData: FormData }
+    >({
+      query: ({ bookId, formData }) => ({
+        url: `/books/${bookId}`,
+        method: "PATCH",
+        body: formData,
+      }),
+    }),
   }),
 });
 
-export const { useCreateBookMutation, useGetBooksQuery } = bookApi;
+export const {
+  useCreateBookMutation,
+  useGetBooksQuery,
+  useUpdateBookByIdMutation,
+} = bookApi;
