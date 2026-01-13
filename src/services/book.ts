@@ -8,3 +8,9 @@ export const getBooks = async (queryParams?: QueryParams) => {
     cache: "no-store",
   });
 };
+
+export const getBookById = async (id: string) => {
+  return fetchFromApi<IBook>(`/books/${id}`, {
+    cache: "no-store",
+  });
+};

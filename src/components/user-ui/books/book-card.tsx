@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import StyledButton from "@/components/shared/styled-button";
 import { IBook } from "@/types/book";
+import Link from "next/link";
 
 const BookCard = ({ book }: { book: IBook }) => {
   return (
@@ -91,17 +92,19 @@ const BookCard = ({ book }: { book: IBook }) => {
             </Text>
           </HStack>
 
-          <StyledButton
-            width="full"
-            size="xs"
-            variant="solid"
-            bg="white"
-            color="black"
-            _hover={{ bg: "gray.200" }}
-            mt="2" // Slightly reduced margin for compact height
-          >
-            View Details
-          </StyledButton>
+          <Link href={`/books/${book._id}`} style={{ width: "100%" }}>
+            <StyledButton
+              width="full"
+              size="xs"
+              variant="solid"
+              bg="white"
+              color="black"
+              _hover={{ bg: "gray.200" }}
+              mt="2"
+            >
+              View Details
+            </StyledButton>
+          </Link>
         </VStack>
       </Box>
     </Box>
