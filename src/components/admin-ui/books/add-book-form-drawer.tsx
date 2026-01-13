@@ -1,6 +1,12 @@
+import FileInput from "@/components/form/file-input";
 import FormDrawer from "@/components/form/form-drawer";
+import StyledInput from "@/components/form/styled-input";
+import StyledNumberInput from "@/components/form/styled-number-input";
+import StyledSelect from "@/components/form/styled-select";
+import StyledTextArea from "@/components/form/styled-text-area";
 import { createBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
+import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReset } from "react-hook-form";
 
@@ -25,7 +31,12 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
     coverImage: [],
     category: "",
     description: "",
+    totalPages: 1,
   };
+
+  const categories = createListCollection({
+    items: [{ label: "Category", value: "category" }],
+  });
 
   const onSubmit = async (
     data: IFormValues,
@@ -77,7 +88,34 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
       isOpen={isOpen}
       submitError={undefined}
     >
-      here is your children inputs
+      <VStack gap="5" align="stretch">
+        <FileInput name="coverImage" label="Cover Image" />
+        <StyledInput type="text" name="title" placeholder="Enter book title" />
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
+          <StyledInput
+            type="text"
+            name="author"
+            placeholder="Enter author name"
+          />
+          <StyledSelect
+            name="category"
+            placeholder="Select category"
+            collection={categories}
+            // portalRef={selectPortalRef}
+          />
+        </SimpleGrid>
+        <StyledNumberInput
+          name="totalPages"
+          unit="page"
+          placeholder="Enter total pages"
+          min={1}
+        />
+        <StyledTextArea
+          name="description"
+          placeholder="Book description here..."
+          rows={5}
+        />
+      </VStack>
     </FormDrawer>
   );
 };
