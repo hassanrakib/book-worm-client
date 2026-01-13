@@ -1,12 +1,12 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { SquareLibrary } from "lucide-react";
+import { ChartBarStacked } from "lucide-react";
 
 const navItemsForAdmin: INavItem[] = [
   {
     id: 1,
-    name: "Manage Books",
-    icon: <SquareLibrary />,
-    href: "/manage-books",
+    name: "Categories",
+    icon: <ChartBarStacked />,
+    href: "/categories",
   },
 ];
 
