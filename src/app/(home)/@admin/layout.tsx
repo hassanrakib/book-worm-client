@@ -1,7 +1,13 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { ChartBarStacked, Users } from "lucide-react";
+import { BookCopy, ChartBarStacked, Users } from "lucide-react";
 
 const navItemsForAdmin: INavItem[] = [
+  {
+    id: 3,
+    name: "Books",
+    icon: <BookCopy />,
+    href: "/books",
+  },
   {
     id: 1,
     name: "Categories",

@@ -9,10 +9,16 @@ import { clearToken } from "@/redux/features/auth/auth.slice";
 import { useAppDispatch } from "@/redux/hooks";
 import { deleteToken } from "@/services/auth";
 import { decodeToken } from "@/utils/auth";
-import { Flex, GridItem, IconButton, Text } from "@chakra-ui/react";
+import { defineStyle, Flex, GridItem, IconButton, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useGetMeQuery } from "@/redux/features/user/user.api";
-import { IUser } from "@/types/user";
+
+const ringCss = defineStyle({
+  outlineWidth: "2px",
+  outlineColor: "colorPalette.500",
+  outlineOffset: "2px",
+  outlineStyle: "solid",
+});
 
 export default function TopNavbar() {
   // next.js router
@@ -60,6 +66,8 @@ export default function TopNavbar() {
           triggerElement={
             <IconButton rounded="full" variant="plain">
               <Avatar
+                css={ringCss}
+                colorPalette={"yellow"}
                 src={user?.profilePhoto || undefined}
                 name={user?.name || "User"}
               />
