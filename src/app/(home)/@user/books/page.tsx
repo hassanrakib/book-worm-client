@@ -3,13 +3,21 @@ import BookFilters from "@/components/user-ui/books/book-filters";
 import { getBooks } from "@/services/book";
 import { Box, VStack, Heading, SimpleGrid, Text } from "@chakra-ui/react";
 
-const BrowseBooksPage = async () => {
-  const books = await getBooks();
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const BrowseBooksPage = async ({ searchParams }: PageProps) => {
+  // Await searchParams to get the current URL filters
+  const filters = await searchParams;
+
+  // getBooks should send these filters to your API
+  // which uses your QueryBuilder backend
+  const books = await getBooks(filters);
   const bookList = books?.data || [];
 
   return (
     <VStack alignItems="stretch" maxW="xl" mx="auto" gap="6" py="8" px="4">
-      {/* 1. Header */}
       <Box>
         <Heading size="xl" mb="1">
           Browse Books
@@ -19,10 +27,9 @@ const BrowseBooksPage = async () => {
         </Text>
       </Box>
 
-      {/* 2. Compact Filters */}
+      {/* This component updates the URL searchParams */}
       <BookFilters />
 
-      {/* 3. Book List/Grid */}
       <VStack align="stretch" gap="4">
         <Text
           fontWeight="bold"
@@ -30,13 +37,9 @@ const BrowseBooksPage = async () => {
           color="fg.muted"
           textTransform="uppercase"
         >
-          {bookList.length} Books Found
+          {bookList.length > 0 ? bookList.length : "No"} Books Found
         </Text>
 
-        {/* Responsive Columns: 
-           1 column on tiny phones (base), 
-           2 columns from small tablets/large phones up (sm) 
-        */}
         <SimpleGrid columns={{ base: 1, sm: 2 }} gap="4">
           {bookList.map((book) => (
             <BookCard key={book._id} book={book} />
@@ -44,8 +47,16 @@ const BrowseBooksPage = async () => {
         </SimpleGrid>
 
         {bookList.length === 0 && (
-          <Box textAlign="center" py="10">
-            <Text color="fg.muted">No books match your criteria.</Text>
+          <Box
+            textAlign="center"
+            py="10"
+            borderWidth="1px"
+            borderStyle="dashed"
+            rounded="xl"
+          >
+            <Text color="fg.muted">
+              No books found matching your current filters.
+            </Text>
           </Box>
         )}
       </VStack>

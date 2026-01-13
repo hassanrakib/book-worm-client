@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
 import {
   VStack,
   Box,
@@ -20,31 +22,74 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-
-// Assuming categories are passed as props or fetched
-const categories = createListCollection({
-  items: [
-    { label: "Sci-Fi", value: "sci-fi" },
-    { label: "Fantasy", value: "fantasy" },
-    { label: "Mystery", value: "mystery" },
-    { label: "Non-Fiction", value: "non-fiction" },
-  ],
-});
+import { useGetCategoriesQuery } from "@/redux/features/category/category.api";
 
 const sortOptions = createListCollection({
   items: [
-    { label: "Top Rated", value: "rating" },
-    { label: "Most Shelved", value: "shelved" },
-    { label: "Newest", value: "newest" },
+    { label: "Top Rated", value: "-avgRating" },
+    { label: "Least Rated", value: "avgRating" },
+    { label: "Most Shelved", value: "-shelfCount" },
+    { label: "Least Shelved", value: "shelfCount" },
   ],
 });
 
 const BookFilters = () => {
-  // State for search, multi-select categories, rating range, and sort
-  const [search, setSearch] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [ratingRange, setRatingRange] = useState<number[]>([0, 5]);
-  const [sortBy, setSortBy] = useState<string[]>(["rating"]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
+  const { data: categoriesResponse } = useGetCategoriesQuery(undefined);
+
+  const categories = createListCollection({
+    items:
+      categoriesResponse?.data?.map((c) => ({ label: c.name, value: c._id })) ||
+      [],
+  });
+
+  // --- 1. State Initialized from URL ---
+  const [search, setSearch] = useState(searchParams.get("searchTerm") || "");
+  const [debouncedSearch] = useDebounce(search, 500);
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    searchParams.get("category")?.split(",") || []
+  );
+
+  const [ratingRange, setRatingRange] = useState<number[]>([
+    Number(searchParams.get("minRating")) || 0,
+    Number(searchParams.get("maxRating")) || 5,
+  ]);
+
+  const [sortBy, setSortBy] = useState<string[]>([
+    searchParams.get("sort") || "-avgRating",
+  ]);
+
+  // --- 2. Update URL when states change ---
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (debouncedSearch) params.set("searchTerm", debouncedSearch);
+    else params.delete("searchTerm");
+
+    if (selectedCategories.length > 0)
+      params.set("category", selectedCategories.join(","));
+    else params.delete("category");
+
+    params.set("minRating", ratingRange[0].toString());
+    params.set("maxRating", ratingRange[1].toString());
+    params.set("sort", sortBy[0]);
+
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    });
+  }, [
+    debouncedSearch,
+    selectedCategories,
+    ratingRange,
+    sortBy,
+    pathname,
+    router,
+  ]);
 
   return (
     <VStack
@@ -54,8 +99,9 @@ const BookFilters = () => {
       borderWidth="1px"
       rounded="2xl"
       bg="white"
+      opacity={isPending ? 0.6 : 1}
+      transition="opacity 0.2s"
     >
-      {/* 1. Search Bar */}
       <Box>
         <Text fontSize="xs" fontWeight="bold" mb="1.5" color="fg.muted">
           SEARCH
@@ -71,9 +117,7 @@ const BookFilters = () => {
         </InputGroup>
       </Box>
 
-      {/* 2. Advanced Filters Grid */}
       <SimpleGrid columns={1} gap="4">
-        {/* Category Multi-Select */}
         <Box>
           <Text fontSize="xs" fontWeight="bold" mb="1.5" color="fg.muted">
             CATEGORIES
@@ -98,14 +142,13 @@ const BookFilters = () => {
           </SelectRoot>
         </Box>
 
-        {/* Rating Range Slider */}
         <Box px="2" pb="2">
           <HStack justify="space-between" mb="2">
             <Text fontSize="xs" fontWeight="bold" color="fg.muted">
               RATING RANGE
             </Text>
             <Text fontSize="xs" fontWeight="bold">
-              {ratingRange[0]} - {ratingRange[1]} Stars
+              {ratingRange[0]} - {ratingRange[1]} ★
             </Text>
           </HStack>
           <Slider.Root
@@ -124,7 +167,6 @@ const BookFilters = () => {
           </Slider.Root>
         </Box>
 
-        {/* Sort Selection */}
         <Box>
           <Text fontSize="xs" fontWeight="bold" mb="1.5" color="fg.muted">
             SORT BY
