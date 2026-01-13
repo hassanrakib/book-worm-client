@@ -19,7 +19,7 @@ const CategoriesTable = ({
     setCategories(initialCategories);
   }, [initialCategories]);
 
-  const [updateCategoryById, { isLoading, error }] =
+  const [updateCategoryById, { error }] =
     useUpdateCategoryByIdMutation();
 
   // Track which row is currently being edited

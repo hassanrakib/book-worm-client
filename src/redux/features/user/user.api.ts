@@ -10,7 +10,17 @@ const userApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    updateUserRoleById: build.mutation<
+      IResponse<IUser>,
+      Pick<IUser, "userId" | "role">
+    >({
+      query: ({ userId, ...update }) => ({
+        url: `/users/${userId}/role`,
+        method: "PATCH",
+        body: update,
+      }),
+    }),
   }),
 });
 
-export const { useGetMeQuery } = userApi;
+export const { useGetMeQuery, useUpdateUserRoleByIdMutation } = userApi;

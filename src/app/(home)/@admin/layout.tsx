@@ -1,5 +1,5 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { ChartBarStacked } from "lucide-react";
+import { ChartBarStacked, Users } from "lucide-react";
 
 const navItemsForAdmin: INavItem[] = [
   {
@@ -7,6 +7,12 @@ const navItemsForAdmin: INavItem[] = [
     name: "Categories",
     icon: <ChartBarStacked />,
     href: "/categories",
+  },
+  {
+    id: 2,
+    name: "Users",
+    icon: <Users />,
+    href: "/users",
   },
 ];
 
