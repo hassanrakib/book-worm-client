@@ -5,6 +5,7 @@ import StyledInput from "@/components/form/styled-input";
 import SubmitButton from "@/components/form/submit-button";
 import { Alert } from "@/components/ui/alert";
 import { toaster } from "@/components/ui/toaster";
+import { revalidateCacheByTag } from "@/lib/revalidate-cache-apis";
 import { useCreateCategoryMutation } from "@/redux/features/category/category.api";
 import { isFetchBaseQueryErrorWithData } from "@/redux/helpers";
 import { categorySchema } from "@/schemas/category";
@@ -30,7 +31,6 @@ export default function CreateCategoryForm() {
     {
       isLoading: isCreatingCategory,
       error: createCategoryError,
-      isSuccess: isCategoryCreationSuccessful,
     },
   ] = useCreateCategoryMutation();
 
@@ -48,7 +48,8 @@ export default function CreateCategoryForm() {
       // reset the form
       reset(defaultValues);
 
-      console.log("Categories", result.data.data);
+      // invalidate the cache
+      revalidateCacheByTag("categories");
     }
   };
 
