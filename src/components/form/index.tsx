@@ -15,7 +15,7 @@ type CustomizedUseFormProps<FormValues extends FieldValues> =
     defaultValues: FormValues;
   };
 
-interface IFormProps<FormValues extends FieldValues> {
+export interface IFormProps<FormValues extends FieldValues> {
   children: React.ReactNode;
   onSubmit: (
     data: FormValues,
