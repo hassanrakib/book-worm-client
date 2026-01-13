@@ -21,7 +21,17 @@ const categoryApi = baseApi.injectEndpoints({
         body: update,
       }),
     }),
+    getCategories: build.query<IResponse<ICategory[]>, undefined>({
+      query: () => ({
+        url: "/categories",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCategoryMutation, useUpdateCategoryByIdMutation } = categoryApi;
+export const {
+  useCreateCategoryMutation,
+  useUpdateCategoryByIdMutation,
+  useGetCategoriesQuery,
+} = categoryApi;

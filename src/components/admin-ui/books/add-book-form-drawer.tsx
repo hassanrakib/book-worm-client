@@ -4,6 +4,7 @@ import StyledInput from "@/components/form/styled-input";
 import StyledNumberInput from "@/components/form/styled-number-input";
 import StyledSelect from "@/components/form/styled-select";
 import StyledTextArea from "@/components/form/styled-text-area";
+import { useGetCategoriesQuery } from "@/redux/features/category/category.api";
 import { createBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
 import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
@@ -34,8 +35,10 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
     totalPages: 1,
   };
 
+  const { data, isError, error } = useGetCategoriesQuery(undefined);
+
   const categories = createListCollection({
-    items: [{ label: "Category", value: "category" }],
+    items: data?.data?.map((c) => ({ label: c.name, value: c._id })) || [],
   });
 
   const onSubmit = async (
@@ -101,7 +104,6 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
             name="category"
             placeholder="Select category"
             collection={categories}
-            // portalRef={selectPortalRef}
           />
         </SimpleGrid>
         <StyledNumberInput
