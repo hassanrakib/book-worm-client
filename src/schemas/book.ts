@@ -10,7 +10,7 @@ export const createBookSchema = z.object({
 
   author: z.string().trim().min(1, "Author name is required"),
 
-  category: z.string().trim().min(1, "Book category is required"),
+  category: z.array(z.string()).min(1, { message: "Category is required" }),
 
   description: z.string().trim().min(1, "Book title is required"),
 

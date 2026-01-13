@@ -35,7 +35,12 @@ export default function FormDrawer<FormValues extends FieldValues>(
   } = props;
 
   return (
-    <Drawer.Root open={isOpen} size="md" onInteractOutside={handleClose} {...rest}>
+    <Drawer.Root
+      open={isOpen}
+      size="md"
+      onInteractOutside={handleClose}
+      {...rest}
+    >
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
@@ -43,11 +48,15 @@ export default function FormDrawer<FormValues extends FieldValues>(
             <Form onSubmit={onSubmit} useFormProps={useFormProps}>
               <Drawer.Header>
                 <Drawer.CloseTrigger asChild pos="initial">
-                  <CloseButton onClick={handleClose} />
+                  <CloseButton disabled={isLoading} onClick={handleClose} />
                 </Drawer.CloseTrigger>
                 <Drawer.Title flex="1">{title}</Drawer.Title>
                 <ButtonGroup>
-                  <StyledButton variant="outline" onClick={handleClose}>
+                  <StyledButton
+                    variant="outline"
+                    disabled={isLoading}
+                    onClick={handleClose}
+                  >
                     Cancel
                   </StyledButton>
                   <SubmitButton isServerActionLoading={isLoading}>

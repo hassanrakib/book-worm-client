@@ -4,6 +4,8 @@ import StyledInput from "@/components/form/styled-input";
 import StyledNumberInput from "@/components/form/styled-number-input";
 import StyledSelect from "@/components/form/styled-select";
 import StyledTextArea from "@/components/form/styled-text-area";
+import { toaster } from "@/components/ui/toaster";
+import { useCreateBookMutation } from "@/redux/features/book/book.api";
 import { useGetCategoriesQuery } from "@/redux/features/category/category.api";
 import { createBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
@@ -15,7 +17,7 @@ type IFormValues = Omit<
   IBook,
   "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
 > & {
-  category: string;
+  category: string[];
   coverImage: File[];
 };
 
@@ -30,16 +32,20 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
     title: "",
     author: "",
     coverImage: [],
-    category: "",
+    category: [],
     description: "",
-    totalPages: 1,
+    totalPages: 0,
   };
 
-  const { data, isError, error } = useGetCategoriesQuery(undefined);
+  const { data: categoriesResponse } = useGetCategoriesQuery(undefined);
 
   const categories = createListCollection({
-    items: data?.data?.map((c) => ({ label: c.name, value: c._id })) || [],
+    items:
+      categoriesResponse?.data?.map((c) => ({ label: c.name, value: c._id })) ||
+      [],
   });
+
+  const [addBook, { isLoading, error }] = useCreateBookMutation();
 
   const onSubmit = async (
     data: IFormValues,
@@ -54,28 +60,28 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
 
     // 2. Prepare the text data (excluding the file)
     const bookData = {
-      title: "",
-      author: "",
-      coverImage: [],
-      category: "",
-      description: "",
+      title: data.title,
+      author: data.author,
+      category: data.category[0],
+      description: data.description,
+      totalPages: data.totalPages,
     };
 
     // 3. Append the stringified data as a text field named 'data'
     formData.append("data", JSON.stringify(bookData));
 
-    // const result = await registerUser(formData);
+    const result = await addBook(formData);
 
     // after successful submission
-    // if (result.data?.data) {
-    // reset the form
-    // reset(defaultValues);
-    // show a ui feedback
-    // toaster.create({ type: "info", description: "Successfully signed up" });
+    if (result.data?.data) {
+      // reset the form
+      reset(defaultValues);
+      // show a ui feedback
+      toaster.create({ type: "info", description: "Successfully added book" });
 
-    // redirect user to the signin page
-    // router.push("/signin");
-    // }
+      // close the drawer
+      onClose();
+    }
   };
 
   return (
@@ -87,9 +93,9 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
         resolver: zodResolver(createBookSchema),
       }}
       handleClose={onClose}
-      isLoading={false}
+      isLoading={isLoading}
       isOpen={isOpen}
-      submitError={undefined}
+      submitError={error}
     >
       <VStack gap="5" align="stretch">
         <FileInput name="coverImage" label="Cover Image" />
@@ -110,7 +116,7 @@ const AddBookFormDrawer = ({ isOpen, onClose }: AddBookFormDrawerProps) => {
           name="totalPages"
           unit="page"
           placeholder="Enter total pages"
-          min={1}
+          min={0}
         />
         <StyledTextArea
           name="description"
