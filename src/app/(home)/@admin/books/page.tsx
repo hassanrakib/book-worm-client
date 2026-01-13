@@ -4,13 +4,19 @@ import AddBookFormDrawer from "@/components/admin-ui/books/add-book-form-drawer"
 import BooksTable from "@/components/admin-ui/books/books-table";
 import EditBookFormDrawer from "@/components/admin-ui/books/edit-book-form-drawer";
 import StyledButton from "@/components/shared/styled-button";
-import { useGetBooksQuery } from "@/redux/features/book/book.api";
+import { toaster } from "@/components/ui/toaster";
+import {
+  useDeleteBookByIdMutation,
+  useGetBooksQuery,
+} from "@/redux/features/book/book.api";
 import { IBook } from "@/types/book";
 import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 
 const Books = () => {
+  const [deleteBookById] = useDeleteBookByIdMutation();
+
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [selectedBookToEdit, setSelectedBookToEdit] = useState<IBook | null>(
     null
@@ -36,6 +42,27 @@ const Books = () => {
     setSelectedBookToEdit(null);
   };
 
+  const handleDeleteBook = async (bookId: string) => {
+    const result = await deleteBookById({ bookId });
+
+    // after successful submission
+    if (result.data?.data) {
+      // show a ui feedback
+      toaster.create({
+        type: "info",
+        description: "Successfully deleted book",
+      });
+      // optimistic update
+      setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
+    } else {
+      // show a ui feedback
+      toaster.create({
+        type: "error",
+        description: "Failed to delete book",
+      });
+    }
+  };
+
   return (
     <>
       <VStack alignItems="stretch" maxW="xl" mx="auto" gap="3.5">
@@ -51,7 +78,7 @@ const Books = () => {
         <BooksTable
           books={books}
           onEdit={handleOpenEditDrawer}
-          onDelete={() => {}}
+          onDelete={handleDeleteBook}
         />
       </VStack>
       {/* add book drawer */}

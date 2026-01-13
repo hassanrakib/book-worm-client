@@ -28,6 +28,15 @@ const bookApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+    deleteBookById: build.mutation<
+      IResponse<IBook>,
+      { bookId: string }
+    >({
+      query: ({ bookId }) => ({
+        url: `/books/${bookId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -35,4 +44,5 @@ export const {
   useCreateBookMutation,
   useGetBooksQuery,
   useUpdateBookByIdMutation,
+  useDeleteBookByIdMutation,
 } = bookApi;
