@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { UseFormReset } from "react-hook-form";
 
-type IFormValues = ICategory;
+type IFormValues = Pick<ICategory, 'name'>;
 
 export default function CreateCategoryForm() {
   // form default value

@@ -1,32 +1,54 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
+import { useUpdateCategoryByIdMutation } from "@/redux/features/category/category.api";
+import { isFetchBaseQueryErrorWithData } from "@/redux/helpers";
+import { ICategory } from "@/types/category";
 import { HStack, IconButton, Table, Input } from "@chakra-ui/react";
-import { useState } from "react";
-import { LuCheck, LuPencilLine, LuX, LuTrash2 } from "react-icons/lu";
+import { useEffect, useState } from "react";
+import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 
-const initialCategories = [
-  { id: 1, name: "Sci-Fi" },
-  { id: 2, name: "Fantasy" },
-  { id: 3, name: "Horror" },
-];
-
-const CategoriesTable = () => {
+const CategoriesTable = ({
+  initialCategories,
+}: {
+  initialCategories: ICategory[];
+}) => {
   const [categories, setCategories] = useState(initialCategories);
+
+  useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
+
+  const [updateCategoryById, { isLoading, error }] =
+    useUpdateCategoryByIdMutation();
+
   // Track which row is currently being edited
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   // Temporary storage for the text while typing
   const [tempName, setTempName] = useState("");
 
-  const handleEditClick = (id: number, currentName: string) => {
+  const handleEditClick = (id: string, currentName: string) => {
     setEditingId(id);
     setTempName(currentName);
   };
 
-  const handleSave = (id: number) => {
-    setCategories(
-      categories.map((c) => (c.id === id ? { ...c, name: tempName } : c))
-    );
-    setEditingId(null);
+  const handleSave = async (id: string) => {
+    const result = await updateCategoryById({ _id: id, name: tempName });
+
+    if (result.data?.data) {
+      // show optimistic update after success
+      setCategories(
+        categories.map((c) => (c._id === id ? { ...c, name: tempName } : c))
+      );
+      setEditingId(null);
+    } else {
+      toaster.create({
+        type: "error",
+        description: isFetchBaseQueryErrorWithData(error)
+          ? error.data.message
+          : "There was an error processing your request",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -48,10 +70,10 @@ const CategoriesTable = () => {
         </Table.Header>
         <Table.Body>
           {categories.map((category, index) => {
-            const isEditing = editingId === category.id;
+            const isEditing = editingId === category._id;
 
             return (
-              <Table.Row key={category.id}>
+              <Table.Row key={category._id}>
                 <Table.Cell>{index + 1}.</Table.Cell>
 
                 <Table.Cell>
@@ -75,7 +97,7 @@ const CategoriesTable = () => {
                           variant="outline"
                           size="xs"
                           colorPalette="green"
-                          onClick={() => handleSave(category.id)}
+                          onClick={() => handleSave(category._id)}
                         >
                           <LuCheck />
                         </IconButton>
@@ -93,7 +115,7 @@ const CategoriesTable = () => {
                         variant="ghost"
                         size="xs"
                         onClick={() =>
-                          handleEditClick(category.id, category.name)
+                          handleEditClick(category._id, category.name)
                         }
                       >
                         <LuPencilLine />
