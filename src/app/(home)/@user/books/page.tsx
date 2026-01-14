@@ -1,4 +1,4 @@
-import BookCard from "@/components/user-ui/books/book-card";
+import BookCard from "@/components/user-ui/shared/book-card";
 import BookFilters from "@/components/user-ui/books/book-filters";
 import { getBooks } from "@/services/book";
 import { Box, VStack, Heading, SimpleGrid, Text } from "@chakra-ui/react";
