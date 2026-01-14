@@ -13,25 +13,39 @@ export const ReadingProgress = ({
   return (
     <Box width="full">
       <HStack justify="space-between" mb="1">
-        <Text fontSize="2xs" fontWeight="bold" color="fg.muted">
+        <Text
+          fontSize="10px"
+          fontWeight="bold"
+          color="gray.400"
+          letterSpacing="widest"
+        >
           PROGRESS
         </Text>
-        <Text fontSize="2xs" fontWeight="bold">
-          {percentage}%
-        </Text>
+        <Box bg="yellow.300" px="2" borderRadius="full">
+          <Text fontSize="10px" fontWeight="black" color="gray.900">
+            {percentage}%
+          </Text>
+        </Box>
       </HStack>
+
       <Progress.Root
         value={percentage}
-        colorPalette="yellow"
-        size="sm"
+        size="xs" // Thinner for a more modern feel
         borderRadius="full"
       >
-        <Progress.Track bg="gray.100">
-          <Progress.Range borderRadius="full" />
+        <Progress.Track bg="gray.100" height="4px">
+          <Progress.Range bg="yellow.400" borderRadius="full" />
         </Progress.Track>
       </Progress.Root>
-      <Text fontSize="2xs" mt="1" textAlign="right" color="fg.muted">
-        {read} / {total} pages
+
+      <Text
+        fontSize="10px"
+        mt="1.5"
+        textAlign="right"
+        color="gray.500"
+        fontWeight="medium"
+      >
+        {read.toLocaleString()} / {total.toLocaleString()} pages
       </Text>
     </Box>
   );

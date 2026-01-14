@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Tabs, SimpleGrid } from "@chakra-ui/react";
+import { Tabs, SimpleGrid, Box, Text } from "@chakra-ui/react";
 import ShelfCard from "./shelf-card";
 import { IShelf, TShelfType } from "@/types/shelf";
 import { useUpdateShelfByIdMutation } from "@/redux/features/shelf/shelf.api";
@@ -16,7 +16,6 @@ interface LibraryProps {
 
 const LibraryTabs = ({ initialData }: LibraryProps) => {
   const [data, setData] = useState(initialData);
-
   const [updateShelfById] = useUpdateShelfByIdMutation();
 
   const handleUpdateStatus = async (
@@ -24,42 +23,24 @@ const LibraryTabs = ({ initialData }: LibraryProps) => {
     currentShelfType: TShelfType,
     newShelfType: TShelfType
   ) => {
-    const result = await updateShelfById({
-      shelfId,
-      shelf: newShelfType,
-    });
-
-    console.log("Error =>", result);
-
+    const result = await updateShelfById({ shelfId, shelf: newShelfType });
     if (result.data?.data) {
       setData((prev) => {
-        // Find the item in the current shelf
         const itemToMove = prev[currentShelfType].find(
           (item) => item._id === shelfId
         );
         if (!itemToMove) return prev;
-
-        // Create the updated item
-        const updatedItem: IShelf = {
-          ...itemToMove,
-          shelf: newShelfType,
-        };
-
+        const updatedItem: IShelf = { ...itemToMove, shelf: newShelfType };
         return {
           ...prev,
-          // Filter out the item from the old shelf array
           [currentShelfType]: prev[currentShelfType].filter(
             (item) => item._id !== shelfId
           ),
-          // Add the updated item to the new shelf array
           [newShelfType]: [...prev[newShelfType], updatedItem],
         };
       });
     } else {
-      toaster.create({
-        type: "error",
-        description: "Failed to update shelf type",
-      });
+      toaster.create({ type: "error", description: "Failed to update shelf" });
     }
   };
 
@@ -68,11 +49,7 @@ const LibraryTabs = ({ initialData }: LibraryProps) => {
     currentShelfType: TShelfType,
     newPages: number
   ) => {
-    const result = await updateShelfById({
-      shelfId: id,
-      pagesRead: newPages,
-    });
-
+    const result = await updateShelfById({ shelfId: id, pagesRead: newPages });
     if (result.data?.data) {
       setData((prev) => ({
         ...prev,
@@ -81,88 +58,93 @@ const LibraryTabs = ({ initialData }: LibraryProps) => {
         ),
       }));
     } else {
-      toaster.create({
-        type: "error",
-        description: "Failed to update pages",
-      });
+      toaster.create({ type: "error", description: "Failed to update pages" });
     }
   };
 
   return (
-    <Tabs.Root
-      defaultValue="currently_reading"
-      variant="plain"
-      colorPalette="yellow"
-    >
-      <Tabs.List bg="gray.100" p="1" borderRadius="2xl" mb="4">
+    <Tabs.Root defaultValue="currently_reading" variant="plain">
+      {/* Styled as a polished wooden shelf */}
+      <Tabs.List
+        bg="gray.400"
+        p="1.5"
+        borderRadius="xl"
+        mb="6"
+        shadow="lg"
+        borderBottom="4px solid"
+        borderColor="yellow.300"
+      >
         <Tabs.Trigger
           value="want_to_read"
           flex="1"
-          borderRadius="xl"
+          borderRadius="lg"
           py="2"
           fontSize="xs"
           fontWeight="bold"
+          color="whiteAlpha.800"
+          _selected={{ bg: "yellow.300", color: "gray.900" }}
+          transition="all 0.2s"
         >
-          WANT ({data.want_to_read.length})
+          WISHLIST ({data.want_to_read.length})
         </Tabs.Trigger>
         <Tabs.Trigger
           value="currently_reading"
           flex="1"
-          borderRadius="xl"
+          borderRadius="lg"
           py="2"
           fontSize="xs"
           fontWeight="bold"
+          color="whiteAlpha.800"
+          _selected={{ bg: "yellow.300", color: "gray.900" }}
+          transition="all 0.2s"
         >
           READING ({data.currently_reading.length})
         </Tabs.Trigger>
         <Tabs.Trigger
           value="read"
           flex="1"
-          borderRadius="xl"
+          borderRadius="lg"
           py="2"
           fontSize="xs"
           fontWeight="bold"
+          color="whiteAlpha.800"
+          _selected={{ bg: "yellow.300", color: "gray.900" }}
+          transition="all 0.2s"
         >
-          FINISHED ({data.read.length})
+          ARCHIVE ({data.read.length})
         </Tabs.Trigger>
       </Tabs.List>
 
-      <Tabs.Content value="want_to_read">
-        <SimpleGrid columns={1} gap="4">
-          {data.want_to_read.map((item) => (
-            <ShelfCard
-              key={item._id}
-              item={item}
-              onUpdateStatus={handleUpdateStatus}
-            />
-          ))}
-        </SimpleGrid>
-      </Tabs.Content>
-
-      <Tabs.Content value="currently_reading">
-        <SimpleGrid columns={1} gap="4">
-          {data.currently_reading.map((item) => (
-            <ShelfCard
-              key={item._id}
-              item={item}
-              onUpdateStatus={handleUpdateStatus}
-              onUpdateProgress={handleUpdateProgress}
-            />
-          ))}
-        </SimpleGrid>
-      </Tabs.Content>
-
-      <Tabs.Content value="read">
-        <SimpleGrid columns={1} gap="4">
-          {data.read.map((item) => (
-            <ShelfCard
-              key={item._id}
-              item={item}
-              onUpdateStatus={handleUpdateStatus}
-            />
-          ))}
-        </SimpleGrid>
-      </Tabs.Content>
+      {Object.entries(data).map(([key, list]) => (
+        <Tabs.Content key={key} value={key} mt="0">
+          <SimpleGrid columns={1} gap="4">
+            {list.map((item) => (
+              <ShelfCard
+                key={item._id}
+                item={item}
+                onUpdateStatus={handleUpdateStatus}
+                onUpdateProgress={
+                  key === "currently_reading" ? handleUpdateProgress : undefined
+                }
+              />
+            ))}
+            {list.length === 0 && (
+              <Box
+                textAlign="center"
+                py="12"
+                px="4"
+                borderWidth="1px"
+                borderStyle="dashed"
+                borderRadius="2xl"
+              >
+                <Text color="gray.500" fontSize="sm">
+                  This shelf is currently empty.
+                </Text>
+              </Box>
+            )}
+          </SimpleGrid>
+        </Tabs.Content>
+      ))}
     </Tabs.Root>
   );
 };

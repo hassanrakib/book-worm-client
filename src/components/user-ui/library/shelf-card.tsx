@@ -15,8 +15,16 @@ import { ReadingProgress } from "./reading-progress";
 
 interface ShelfCardProps {
   item: IShelf;
-  onUpdateStatus: (id: string, currentStatus: TShelfType, newStatus: TShelfType) => void;
-  onUpdateProgress?: (id: string, currentShelfType: TShelfType, newPages: number) => void;
+  onUpdateStatus: (
+    id: string,
+    currentStatus: TShelfType,
+    newStatus: TShelfType
+  ) => void;
+  onUpdateProgress?: (
+    id: string,
+    currentShelfType: TShelfType,
+    newPages: number
+  ) => void;
 }
 
 const ShelfCard = ({
@@ -27,16 +35,28 @@ const ShelfCard = ({
   const { book, pagesRead = 0, shelf, _id } = item;
 
   return (
-    <Box p="3" borderWidth="1px" borderRadius="2xl" bg="white" shadow="sm">
-      <HStack gap="4" align="start">
-        {/* Book Cover */}
+    <Box
+      p="4"
+      borderRadius="3xl" // More organic, rounded feel
+      bgGradient="to-br"
+      gradientFrom="white"
+      gradientTo="orange.50/30"
+      borderWidth="1px"
+      borderColor="gray.100"
+      shadow="sm"
+      _hover={{ shadow: "md", transform: "translateY(-2px)" }}
+      transition="all 0.3s ease"
+    >
+      <HStack gap="5" align="start">
+        {/* Book Cover: Styled to look like it's leaning */}
         <Box
-          width="80px"
+          width="90px"
           aspectRatio={3 / 4}
           borderRadius="lg"
           overflow="hidden"
           flexShrink={0}
-          shadow="md"
+          shadow="xl"
+          transform="rotate(-1deg)" // Subtle tilt for organic look
         >
           <Image
             src={book.coverImage}
@@ -48,32 +68,54 @@ const ShelfCard = ({
         </Box>
 
         {/* Content */}
-        <VStack align="start" gap="2" flex="1" overflow="hidden">
+        <VStack align="start" gap="3" flex="1" overflow="hidden">
           <Box>
-            <Text fontSize="sm" fontWeight="bold" lineClamp={1}>
+            <Text
+              fontSize="md"
+              fontWeight="800"
+              lineClamp={1}
+              fontFamily="serif"
+              color="gray.800"
+              letterSpacing="tight"
+            >
               {book.title}
             </Text>
-            <Text fontSize="xs" color="fg.muted">
+            <Text fontSize="xs" color="gray.500" fontWeight="600">
               by {book.author}
             </Text>
           </Box>
 
           {shelf === "currently_reading" && (
-            <VStack width="full" gap="2">
+            <VStack width="full" gap="3" py="1">
               <ReadingProgress read={pagesRead} total={book.totalPages} />
+
               <Group attached width="full">
                 <IconButton
+                  bg="gray.100"
+                  _hover={{ bg: "yellow.200" }}
                   onClick={() =>
                     onUpdateProgress?.(_id, shelf, Math.max(0, pagesRead - 5))
                   }
-                  aria-label="Decrease progress"
+                  aria-label="Decrease"
                 >
                   <LuMinus />
                 </IconButton>
-                <Button flex="1" disabled>
-                  Update Pages
-                </Button>
+                <Box
+                  flex="1"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  bg="gray.50"
+                  borderX="1px solid"
+                  borderColor="gray.200"
+                >
+                  <Text fontSize="2xs" fontWeight="bold" color="gray.600">
+                    UPDATE
+                  </Text>
+                </Box>
                 <IconButton
+                  bg="gray.100"
+                  _hover={{ bg: "yellow.200" }}
                   onClick={() =>
                     onUpdateProgress?.(
                       _id,
@@ -81,7 +123,7 @@ const ShelfCard = ({
                       Math.min(book.totalPages, pagesRead + 5)
                     )
                   }
-                  aria-label="Increase progress"
+                  aria-label="Increase"
                 >
                   <LuPlus />
                 </IconButton>
@@ -89,35 +131,55 @@ const ShelfCard = ({
             </VStack>
           )}
 
-          {/* Action Buttons */}
-          <HStack width="full" mt="auto">
+          {/* Action Area */}
+          <Box width="full" pt={shelf === "read" ? 0 : 1}>
             {shelf === "want_to_read" && (
               <Button
-                size="xs"
+                size="sm"
                 width="full"
-                colorPalette="yellow"
+                bg="yellow.300"
+                color="gray.900"
+                fontWeight="bold"
+                borderRadius="full"
+                _hover={{ bg: "yellow.400", shadow: "inner" }}
                 onClick={() => onUpdateStatus(_id, shelf, "currently_reading")}
               >
                 <LuPlay /> Start Reading
               </Button>
             )}
+
             {shelf === "currently_reading" && (
               <Button
-                size="xs"
+                size="sm"
                 width="full"
-                variant="subtle"
-                colorPalette="green"
+                variant="outline"
+                borderColor="gray.800"
+                color="gray.800"
+                borderRadius="full"
+                _hover={{ bg: "gray.800", color: "white" }}
                 onClick={() => onUpdateStatus(_id, shelf, "read")}
               >
-                <LuCheck /> Mark as Read
+                <LuCheck /> Complete Book
               </Button>
             )}
+
             {shelf === "read" && (
-              <Text fontSize="2xs" color="green.600" fontWeight="bold">
-                ✓ READ
-              </Text>
+              <HStack
+                bg="green.50"
+                px="3"
+                py="1"
+                borderRadius="full"
+                display="inline-flex"
+                borderWidth="1px"
+                borderColor="green.100"
+              >
+                <LuCheck size={12} color="green" />
+                <Text fontSize="10px" color="green.700" fontWeight="bold">
+                  FINISHED
+                </Text>
+              </HStack>
             )}
-          </HStack>
+          </Box>
         </VStack>
       </HStack>
     </Box>
