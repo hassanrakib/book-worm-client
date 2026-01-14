@@ -18,7 +18,7 @@ const navItemsForUser: INavItem[] = [
     id: 2,
     name: "My Library",
     icon: <Library />,
-    href: "/library",
+    href: "/my-library",
   },
 ];
 

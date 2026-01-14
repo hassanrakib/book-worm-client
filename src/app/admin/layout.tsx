@@ -7,25 +7,25 @@ const navItemsForAdmin: INavItem[] = [
     id: 3,
     name: "Books",
     icon: <BookCopy />,
-    href: "/books",
+    href: "/admin/manage-books",
   },
   {
     id: 1,
     name: "Categories",
     icon: <ChartBarStacked />,
-    href: "/categories",
+    href: "/admin/manage-categories",
   },
   {
     id: 2,
     name: "Users",
     icon: <Users />,
-    href: "/users",
+    href: "/admin/manage-users",
   },
   {
     id: 4,
     name: "Reviews",
     icon: <MdRateReview />,
-    href: "/reviews",
+    href: "/admin/manage-reviews",
   },
 ];
 
