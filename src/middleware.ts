@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { decodeToken } from "./utils/auth";
 
 const authRoutes = ["/signin", "/signup"];
-const userRoutes = ["/home", "/books", "/my-library"];
+const userRoutes = ["/home", "/books", "/my-library", "/tutorials"];
 const adminRoutes = [
   "/admin/dashboard",
   "/admin/manage-books",

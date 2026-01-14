@@ -1,5 +1,5 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { BookCopy, Home, Library } from "lucide-react";
+import { BookCopy, Home, Library, SquarePlay } from "lucide-react";
 
 const navItemsForUser: INavItem[] = [
   {
@@ -19,6 +19,12 @@ const navItemsForUser: INavItem[] = [
     name: "My Library",
     icon: <Library />,
     href: "/my-library",
+  },
+  {
+    id: 5,
+    name: "Tutorials",
+    icon: <SquarePlay />,
+    href: "tutorials",
   },
 ];
 
