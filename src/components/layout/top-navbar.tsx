@@ -4,14 +4,18 @@ import StyledButton from "@/components/shared/styled-button";
 import StyledPopover from "@/components/shared/styled-popover";
 import BookWormLogo from "@/components/shared/book-worm-logo";
 import { Avatar } from "@/components/ui/avatar";
-import useToken from "@/hooks/useToken";
 import { clearToken } from "@/redux/features/auth/auth.slice";
 import { useAppDispatch } from "@/redux/hooks";
 import { deleteToken } from "@/services/auth";
-import { decodeToken } from "@/utils/auth";
-import { defineStyle, Flex, GridItem, IconButton, Text } from "@chakra-ui/react";
+import {
+  defineStyle,
+  Flex,
+  GridItem,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useGetMeQuery } from "@/redux/features/user/user.api";
+import { IUser } from "@/types/user";
 
 const ringCss = defineStyle({
   outlineWidth: "2px",
@@ -19,22 +23,16 @@ const ringCss = defineStyle({
   outlineStyle: "solid",
 });
 
-export default function TopNavbar() {
+export default function TopNavbar({
+  user,
+}: {
+  user: Omit<IUser, "password"> | undefined;
+}) {
   // next.js router
   const router = useRouter();
 
   // redux dispatch
   const dispatch = useAppDispatch();
-
-  // get the token
-  const token = useToken();
-
-  // decrypt the token
-  const tokenPayload = decodeToken(token);
-
-  const { data } = useGetMeQuery(undefined, { skip: !tokenPayload });
-
-  const user = data?.data;
 
   const handleSignout = async () => {
     // delete the "token" cookie

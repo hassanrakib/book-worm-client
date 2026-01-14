@@ -2,6 +2,7 @@ import { Container, Grid, GridItem } from "@chakra-ui/react";
 import TopNavbar from "@/components/layout/top-navbar";
 import Sidebar from "@/components/layout/sidebar";
 import FixedBottomNavbar from "@/components/layout/fixed-bottom-navbar";
+import { getMe } from "@/services/user";
 
 // interface of nav item
 export interface INavItem {
@@ -18,6 +19,11 @@ export default async function MainLayout({
   navItems: INavItem[];
   children: React.ReactNode;
 }) {
+
+  const res = await getMe();
+
+  const userProfile = res.data;
+
   return (
     <Container p={0} minH="100vh">
       {/* 1 column from base to below lg breakpoint */}
@@ -40,7 +46,7 @@ export default async function MainLayout({
           px={{ base: 3, md: 4 }}
         >
           {/* Top Navbar */}
-          <TopNavbar />
+          <TopNavbar user={userProfile} />
 
           {/* Main Content */}
           {/* min height is set by subtracting ((16 + 16)px padding to the top & bottom + 50px header navbar + 16px gap below the navbar) */}

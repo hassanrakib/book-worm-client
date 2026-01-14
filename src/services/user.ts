@@ -8,3 +8,9 @@ export const getUsers = async (queryParams?: QueryParams) => {
     cache: "no-store",
   });
 };
+
+export const getMe = async () => {
+  return fetchFromApi<Omit<IUser, "password">>("/users/me", {
+    cache: "no-store",
+  });
+};
