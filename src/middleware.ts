@@ -3,50 +3,43 @@ import { NextRequest, NextResponse } from "next/server";
 import { decodeToken } from "./utils/auth";
 
 const authRoutes = ["/signin", "/signup"];
+const userRoutes = ["/", "/books", "/library"];
+const adminRoutes = ["/", "/books", "/categories", "/users", "/reviews"];
 
 export default async function middleware(request: NextRequest) {
-  // which path the user is intending to go
   const { pathname } = request.nextUrl;
-
-  // if the user is authenticated the token will be found
   const token = (await cookies()).get("token")?.value;
-
-  // optimistic check
   const tokenPayload = decodeToken(token);
 
-  // if the user is uauthenticated
+  // 1. Not Logged In
   if (!tokenPayload) {
-    // and trying to get into auth routes
-    if (authRoutes.includes(pathname)) {
-      // let the user go
-      return NextResponse.next();
-    } else {
-      // redirect the user to the /signin route as the user is trying to access
-      // the protected routes
-      return NextResponse.redirect(
-        new URL(`/signin?redirect=${pathname}`, request.url)
-      );
-    }
+    if (authRoutes.includes(pathname)) return NextResponse.next();
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // if the user is authenticated
-  if (tokenPayload) {
-    // and trying to get into the auth routes
-    if (authRoutes.includes(pathname)) {
-      // redirect to the homepage
-      return NextResponse.redirect(new URL("/", request.url));
-    } else {
-      // else user want to go any protected route
-      return NextResponse.next();
-    }
+  // 2. Logged In: Trying to access Signin/Signup
+  if (authRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
+
+  // 3. Logged In: Role-Based Access Control
+  const role = tokenPayload.role;
+  const allowedPaths = role === "admin" ? adminRoutes : userRoutes;
+
+  // Check if current path is in the allowed list
+  // The second check handles dynamic routes like /books/[id]
+  const isAllowed =
+    allowedPaths.includes(pathname) ||
+    (pathname.startsWith("/books/") && allowedPaths.includes("/books"));
+
+  if (!isAllowed) {
+    // Rewrite to 404 so the user stays on the URL but sees "Not Found"
+    return NextResponse.rewrite(new URL("/404", request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  // matcher defines the routes to call middleware for
-  matcher: [
-    "/",
-    "/signin",
-    "/signup",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

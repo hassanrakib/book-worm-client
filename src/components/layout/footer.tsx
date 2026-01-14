@@ -66,16 +66,16 @@ const Footer = () => {
             align="center"
           >
             {footerLinks.map((link) => (
-              <Link key={link.label} href={link.href} passHref legacyBehavior>
-                <ChakraLink
-                  fontSize="xs"
-                  fontWeight="bold"
-                  color="gray.600"
-                  _hover={{ color: "yellow.600" }}
-                >
-                  {link.label}
-                </ChakraLink>
-              </Link>
+              <ChakraLink
+                key={link.label}
+                fontSize="xs"
+                fontWeight="bold"
+                color="gray.600"
+                _hover={{ color: "yellow.600" }}
+                asChild
+              >
+                <Link href={link.href}>{link.label}</Link>
+              </ChakraLink>
             ))}
           </Stack>
 
