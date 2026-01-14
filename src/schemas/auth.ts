@@ -3,10 +3,6 @@ import { z } from "zod";
 
 export const userSignupSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
-  profilePhoto: z
-    .array(z.instanceof(File), { message: "Profile photo is required" })
-    .min(1, "Please upload a profile photo")
-    .max(1, "You can only upload one photo"),
   email: z
     .string()
     .trim()

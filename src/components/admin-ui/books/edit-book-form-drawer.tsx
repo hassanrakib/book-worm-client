@@ -11,7 +11,7 @@ import { updateBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
 import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { UseFormReset } from "react-hook-form";
 
 type IFormValues = Omit<
@@ -19,7 +19,6 @@ type IFormValues = Omit<
   "_id" | "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
 > & {
   category: string[];
-  coverImage?: File[];
 };
 
 interface EditBookFormDrawerProps {
@@ -39,11 +38,19 @@ const EditBookFormDrawer = ({
   const defaultValues: IFormValues = {
     title: selectedBookToEdit.title,
     author: selectedBookToEdit.author,
-    coverImage: undefined,
     category: [selectedBookToEdit.category._id],
     description: selectedBookToEdit.description,
     totalPages: selectedBookToEdit.totalPages,
   };
+
+   const [file, setFile] = useState<File | null>(null);
+  
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setFile(file);
+      }
+    };
 
   const { data: categoriesResponse } = useGetCategoriesQuery(undefined);
 
@@ -61,9 +68,8 @@ const EditBookFormDrawer = ({
   ) => {
     const formData = new FormData();
 
-    // 1. Extract the file from the array
-    if (data.coverImage && data.coverImage.length > 0) {
-      formData.append("image", data.coverImage[0]);
+    if (file) {
+      formData.append("image", file);
     }
 
     // 2. Prepare the text data (excluding the file)
@@ -118,11 +124,7 @@ const EditBookFormDrawer = ({
       submitError={error}
     >
       <VStack gap="5" align="stretch">
-        <FileInput
-          name="coverImage"
-          label="Cover Image"
-          defaultUrl={selectedBookToEdit.coverImage}
-        />
+        <input type="file" accept="image/*" onChange={handleFileChange} />
         <StyledInput type="text" name="title" placeholder="Enter book title" />
         <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
           <StyledInput

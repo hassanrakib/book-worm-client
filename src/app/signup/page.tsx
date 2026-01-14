@@ -17,14 +17,22 @@ import BookWormLogo from "@/components/shared/book-worm-logo";
 import { toaster } from "@/components/ui/toaster";
 import FileInput from "@/components/form/file-input";
 import { isFetchBaseQueryErrorWithData } from "@/redux/helpers";
+import { useState } from "react";
 
-type IFormValues = Pick<IUser, "name" | "email" | "password"> & {
-  profilePhoto: File[];
-};
+type IFormValues = Pick<IUser, "name" | "email" | "password">;
 
 const SignUp = () => {
   // router from next/navigation
   const router = useRouter();
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+    }
+  };
 
   const [
     registerUser,
@@ -34,7 +42,6 @@ const SignUp = () => {
   // default values for the register form
   const defaultValues: IFormValues = {
     name: "",
-    profilePhoto: [],
     email: "",
     password: "",
   };
@@ -45,9 +52,11 @@ const SignUp = () => {
   ) => {
     const formData = new FormData();
 
-    // 1. Extract the file from the array
-    if (data.profilePhoto && data.profilePhoto.length > 0) {
-      formData.append("image", data.profilePhoto[0]);
+    if (file) {
+      formData.append("image", file);
+    } else {
+      toaster.create({type: "error", description: "Please select file"});
+      return;
     }
 
     // 2. Prepare the text data (excluding the file)
@@ -95,7 +104,11 @@ const SignUp = () => {
           }}
         >
           <Card.Body gap={3}>
-            <FileInput label="Upload Photo" name="profilePhoto" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
             <StyledInput
               name="name"
               placeholder="Full Name"

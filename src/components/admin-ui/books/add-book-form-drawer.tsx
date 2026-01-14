@@ -11,7 +11,7 @@ import { createBookSchema } from "@/schemas/book";
 import { IBook } from "@/types/book";
 import { createListCollection, SimpleGrid, VStack } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { UseFormReset } from "react-hook-form";
 
 type IFormValues = Omit<
@@ -19,7 +19,6 @@ type IFormValues = Omit<
   "_id" | "avgRating" | "reviewCount" | "shelfCount" | "category" | "coverImage"
 > & {
   category: string[];
-  coverImage: File[];
 };
 
 interface AddBookFormDrawerProps {
@@ -28,15 +27,27 @@ interface AddBookFormDrawerProps {
   onClose: () => void;
 }
 
-const AddBookFormDrawer = ({ isOpen, onClose, setBooks }: AddBookFormDrawerProps) => {
+const AddBookFormDrawer = ({
+  isOpen,
+  onClose,
+  setBooks,
+}: AddBookFormDrawerProps) => {
   // default values for the form
   const defaultValues: IFormValues = {
     title: "",
     author: "",
-    coverImage: [],
     category: [],
     description: "",
     totalPages: 0,
+  };
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+    }
   };
 
   const { data: categoriesResponse } = useGetCategoriesQuery(undefined);
@@ -55,9 +66,11 @@ const AddBookFormDrawer = ({ isOpen, onClose, setBooks }: AddBookFormDrawerProps
   ) => {
     const formData = new FormData();
 
-    // 1. Extract the file from the array
-    if (data.coverImage && data.coverImage.length > 0) {
-      formData.append("image", data.coverImage[0]);
+    if (file) {
+      formData.append("image", file);
+    } else {
+      toaster.create({ type: "error", description: "Please select file" });
+      return;
     }
 
     // 2. Prepare the text data (excluding the file)
@@ -81,7 +94,7 @@ const AddBookFormDrawer = ({ isOpen, onClose, setBooks }: AddBookFormDrawerProps
       // show a ui feedback
       toaster.create({ type: "info", description: "Successfully added book" });
 
-      setBooks((prevBooks) => ([(result.data.data as IBook), ...prevBooks]));
+      setBooks((prevBooks) => [result.data.data as IBook, ...prevBooks]);
 
       // close the drawer
       onClose();
@@ -102,7 +115,7 @@ const AddBookFormDrawer = ({ isOpen, onClose, setBooks }: AddBookFormDrawerProps
       submitError={error}
     >
       <VStack gap="5" align="stretch">
-        <FileInput name="coverImage" label="Cover Image" />
+        <input type="file" accept="image/*" onChange={handleFileChange} />
         <StyledInput type="text" name="title" placeholder="Enter book title" />
         <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
           <StyledInput

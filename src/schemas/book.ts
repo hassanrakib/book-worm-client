@@ -3,11 +3,6 @@ import z from "zod";
 export const createBookSchema = z.object({
   title: z.string().trim().min(1, "Book title is required"),
 
-  coverImage: z
-    .array(z.instanceof(File), { message: "cover image is required" })
-    .min(1, "Please upload a cover image")
-    .max(1, "You can only upload one photo"),
-
   author: z.string().trim().min(1, "Author name is required"),
 
   category: z.array(z.string()).min(1, { message: "Category is required" }),
@@ -19,12 +14,6 @@ export const createBookSchema = z.object({
 
 export const updateBookSchema = z.object({
   title: z.string().trim().min(1, "Book title is required"),
-
-  coverImage: z
-    .array(z.instanceof(File), { message: "cover image is required" })
-    .min(1, "Please upload a cover image")
-    .max(1, "You can only upload one photo")
-    .optional(),
 
   author: z.string().trim().min(1, "Author name is required"),
 
