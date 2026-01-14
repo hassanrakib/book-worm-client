@@ -1,6 +1,8 @@
 import { getBookById } from "@/services/book";
 import BookDetailsView from "@/components/user-ui/books/book-details-view";
 import { notFound } from "next/navigation";
+import { VStack } from "@chakra-ui/react";
+import ReviewForm from "@/components/user-ui/books/review-form";
 
 interface PageProps {
   params: Promise<{ bookId: string }>;
@@ -17,5 +19,10 @@ export default async function BookDetailsPage({ params }: PageProps) {
     notFound(); // Triggers Next.js 404 page if book doesn't exist
   }
 
-  return <BookDetailsView book={book} />;
+  return (
+    <VStack alignItems="stretch" maxW="xl" mx="auto" gap="6" py="8" px="4">
+      <BookDetailsView book={book} />
+      <ReviewForm bookId={book._id} />
+    </VStack>
+  );
 }

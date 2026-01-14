@@ -12,7 +12,7 @@ export interface IReview {
   _id: string;
   user: IUser;
   book: IBook;
-  rating: number; // 0–5
+  rating: number;
   comment: string;
   status: "pending" | "approved";
 }
