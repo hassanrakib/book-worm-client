@@ -7,18 +7,29 @@ import {
 } from "@chakra-ui/react";
 import { BookOpen } from "lucide-react";
 import NextLink from "next/link";
+import { LuBookMarked } from "react-icons/lu";
 
 const BookWormLogo = (props: Omit<ChakraLinkProps, "href">) => {
   return (
-    <ChakraLink asChild _hover={{textDecor: "none"}} _focus={{outline: "none"}} display="flex" justifyContent="center" {...props}>
+    <ChakraLink
+      asChild
+      _hover={{ textDecor: "none" }}
+      _focus={{ outline: "none" }}
+      display="flex"
+      justifyContent="center"
+      {...props}
+    >
       <NextLink href="/">
-        <Flex alignItems="baseline" cursor="pointer">
-          <Text fontSize="lg" fontWeight="bold">
+        <Flex alignItems="center" cursor="pointer" color="yellow.600">
+          <LuBookMarked size={24} />
+          <Text
+            fontSize="lg"
+            fontWeight="black"
+            letterSpacing="tighter"
+            fontFamily="serif"
+          >
             Book Worm
           </Text>
-          <Icon boxSize={7} color="yellow.400">
-            <BookOpen />
-          </Icon>
         </Flex>
       </NextLink>
     </ChakraLink>
