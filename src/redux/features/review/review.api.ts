@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
 import { IResponse } from "@/types/global";
-import { IReview } from "@/types/review";
+import { IReview, TReviewStatus } from "@/types/review";
 
 const reviewApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -14,7 +14,23 @@ const reviewApi = baseApi.injectEndpoints({
         body: payload,
       }),
     }),
+    deleteReviewById: build.mutation<IResponse<IReview>, { reviewId: string }>({
+      query: ({ reviewId }) => ({
+        url: `/reviews/${reviewId}`,
+        method: "DELETE",
+      }),
+    }),
+    updateReviewStatusById: build.mutation<
+      IResponse<IReview>,
+      { reviewId: string; status: TReviewStatus }
+    >({
+      query: ({ reviewId, ...payload }) => ({
+        url: `/reviews/${reviewId}/status`,
+        method: "PATCH",
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useAddReviewMutation } = reviewApi;
+export const { useAddReviewMutation, useUpdateReviewStatusByIdMutation, useDeleteReviewByIdMutation } = reviewApi;
