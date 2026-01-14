@@ -6,3 +6,9 @@ export const getAdminDashboardOverview = async () => {
     cache: "no-store",
   });
 };
+
+export const getUserDashboardOverview = async () => {
+  return fetchFromApi<IAdminOverview>("/overview/user", {
+    cache: "no-store",
+  });
+};
