@@ -16,10 +16,10 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = [
-    { label: "Search Books", href: "/books" },
-    { label: "My Library", href: "/library" },
-    { label: "Terms", href: "/terms" },
-    { label: "Privacy", href: "/privacy" },
+    { label: "Blog", href: "#" },
+    { label: "Contact", href: "#" },
+    { label: "Terms", href: "#" },
+    { label: "Privacy", href: "#" },
   ];
 
   // We remove the icon from the object to keep it serializable
