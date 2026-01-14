@@ -14,3 +14,9 @@ export const getBookById = async (id: string) => {
     cache: "no-store",
   });
 };
+
+export const getRecommendedBooksForUser = async () => {
+  return fetchFromApi<IBook[]>("/books/recommended", {
+    cache: "no-store",
+  });
+};
