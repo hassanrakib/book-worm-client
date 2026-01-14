@@ -26,7 +26,7 @@ const Footer = () => {
   // or just use IDs like we did before
   const socialLinks = [
     { id: "twitter", href: "#", label: "Twitter" },
-    { id: "github", href: "#", label: "GitHub" },
+    { id: "github", href: "https://github.com/hassanrakib", label: "GitHub" },
     { id: "instagram", href: "#", label: "Instagram" },
   ];
 
