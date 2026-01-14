@@ -2,6 +2,7 @@ import { sora } from "@/config/fonts";
 import Providers from "@/lib/provider";
 import type { Metadata } from "next";
 import { Container } from "@chakra-ui/react";
+import Footer from "@/components/layout/footer";
 
 export const metadata: Metadata = {
   title: "Book Worm",
@@ -19,6 +20,7 @@ export default function RootLayout({
           {/* it takes all of the width of body */}
           <Container bgColor="gray.100" fluid p="0">
             {children}
+            <Footer />
           </Container>
         </Providers>
       </body>
