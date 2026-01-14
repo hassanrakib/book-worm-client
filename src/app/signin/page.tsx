@@ -62,7 +62,7 @@ const SignIn = () => {
       // backend server domain doesn't have cookie to send from the browser
       dispatch(setToken(result.data.data.token));
 
-      router.push(redirect ? redirect : "/home");
+      router.push(redirect ? redirect : "/");
     }
   };
 

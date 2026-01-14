@@ -6,7 +6,7 @@ const navItemsForUser: INavItem[] = [
     id: 3,
     name: "Home",
     icon: <Home />,
-    href: "/home",
+    href: "/",
   },
   {
     id: 1,
