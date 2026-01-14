@@ -23,9 +23,7 @@ const AddToShelf = ({ bookId }: { bookId: string }) => {
     } else {
       toaster.create({
         type: "error",
-        description: isFetchBaseQueryErrorWithData(error)
-          ? error.data.message
-          : "There was an error processing your request",
+        description: "Book is already in your shelf"
       });
     }
   };
