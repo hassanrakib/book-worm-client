@@ -1,5 +1,5 @@
 import { fetchFromApi } from "@/lib/fetch-from-api";
-import { IAdminOverview } from "@/types/overview";
+import { IAdminOverview, IUserOverview } from "@/types/overview";
 
 export const getAdminDashboardOverview = async () => {
   return fetchFromApi<IAdminOverview>("/overview/admin", {
@@ -8,7 +8,7 @@ export const getAdminDashboardOverview = async () => {
 };
 
 export const getUserDashboardOverview = async () => {
-  return fetchFromApi<IAdminOverview>("/overview/user", {
+  return fetchFromApi<IUserOverview>("/overview/user", {
     cache: "no-store",
   });
 };
