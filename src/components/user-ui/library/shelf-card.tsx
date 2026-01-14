@@ -91,7 +91,7 @@ const ShelfCard = ({
 
               <Group attached width="full">
                 <IconButton
-                  bg="gray.100"
+                  bg="gray.400"
                   _hover={{ bg: "yellow.200" }}
                   onClick={() =>
                     onUpdateProgress?.(_id, shelf, Math.max(0, pagesRead - 5))
@@ -110,11 +110,11 @@ const ShelfCard = ({
                   borderColor="gray.200"
                 >
                   <Text fontSize="2xs" fontWeight="bold" color="gray.600">
-                    UPDATE
+                    UPDATE PAGE
                   </Text>
                 </Box>
                 <IconButton
-                  bg="gray.100"
+                  bg="gray.400"
                   _hover={{ bg: "yellow.200" }}
                   onClick={() =>
                     onUpdateProgress?.(
