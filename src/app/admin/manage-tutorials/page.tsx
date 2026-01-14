@@ -17,23 +17,20 @@ import { ITutorial } from "@/types/tutorial";
 import { useEffect, useState } from "react";
 
 const TutorialsPage = () => {
-  const { data, isLoading } = useGetTutorialsQuery(undefined);
+  const { data, isLoading, refetch} = useGetTutorialsQuery(undefined);
 
-  const [tutorials, setTutorials] = useState<ITutorial[]>([]);
+  const tutorials = data?.data || [];
 
-  // Sync state only when the initial data arrives
-  useEffect(() => {
-    if (data?.data) {
-      setTutorials(data.data);
-    }
-  }, [data]);
+  const onAdd = () =>{
+    refetch();
+  }
 
   return (
     <Center w="100%">
       <Container maxW="xl" py="10" px="4">
         <VStack gap="8" align="stretch">
           {/* Form Section */}
-          <AddTutorialForm setTutorials={setTutorials} />
+          <AddTutorialForm onAdd={onAdd} />
 
           <Separator />
 

@@ -14,11 +14,7 @@ import { tutorialValidationSchema } from "@/schemas/tutorial";
 
 type IFormValues = Omit<ITutorial, "_id">;
 
-const AddTutorialForm = ({
-  setTutorials,
-}: {
-  setTutorials: React.Dispatch<React.SetStateAction<ITutorial[]>>;
-}) => {
+const AddTutorialForm = ({ onAdd } : { onAdd: () => void; }) => {
   const defaultValues: IFormValues = {
     title: "",
     url: "",
@@ -44,10 +40,7 @@ const AddTutorialForm = ({
       // reset the form
       reset(defaultValues);
 
-      const newTutorial = result.data.data;
-
-      // Update the parent state locally
-      setTutorials((prev) => [newTutorial, ...prev]);
+      onAdd();
     }
   };
 
