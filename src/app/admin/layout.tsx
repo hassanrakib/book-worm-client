@@ -1,8 +1,14 @@
 import MainLayout, { INavItem } from "@/components/layout";
-import { BookCopy, ChartBarStacked, Users } from "lucide-react";
-import { MdRateReview } from "react-icons/md";
+import { BookCopy, ChartBarStacked, SquarePlay, Users } from "lucide-react";
+import { MdDashboard, MdRateReview } from "react-icons/md";
 
 const navItemsForAdmin: INavItem[] = [
+  {
+    id: 6,
+    name: "Dashboard",
+    icon: <MdDashboard />,
+    href: "/admin/dashboard",
+  },
   {
     id: 3,
     name: "Books",
@@ -26,6 +32,12 @@ const navItemsForAdmin: INavItem[] = [
     name: "Reviews",
     icon: <MdRateReview />,
     href: "/admin/manage-reviews",
+  },
+  {
+    id: 5,
+    name: "Tutorials",
+    icon: <SquarePlay />,
+    href: "/admin/manage-tutorials",
   },
 ];
 

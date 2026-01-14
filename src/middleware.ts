@@ -10,6 +10,7 @@ const adminRoutes = [
   "/admin/manage-categories",
   "/admin/manage-users",
   "/admin/manage-reviews",
+  "/admin/manage-tutorials",
 ];
 
 export default async function middleware(request: NextRequest) {

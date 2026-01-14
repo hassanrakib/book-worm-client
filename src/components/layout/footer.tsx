@@ -37,6 +37,7 @@ const Footer = () => {
       borderTop="1px solid"
       borderColor="gray.100"
       mt="auto"
+      paddingBottom={"20"}
     >
       <Container maxW="xl" py="10" px="6">
         <VStack gap="8">
