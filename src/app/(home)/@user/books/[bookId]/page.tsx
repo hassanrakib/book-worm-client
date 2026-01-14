@@ -1,8 +1,8 @@
 import { getBookById } from "@/services/book";
-import BookDetailsView from "@/components/user-ui/books/book-details-view";
+import BookDetailsView from "@/components/user-ui/books/book/book-details-view";
 import { notFound } from "next/navigation";
 import { VStack } from "@chakra-ui/react";
-import ReviewForm from "@/components/user-ui/books/review-form";
+import ReviewForm from "@/components/user-ui/books/book/review-form";
 
 interface PageProps {
   params: Promise<{ bookId: string }>;

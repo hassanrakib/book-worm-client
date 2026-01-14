@@ -14,9 +14,7 @@ import {
 } from "@chakra-ui/react";
 import {
   LuBookOpen,
-  LuLibrary,
   LuLayoutDashboard,
-  LuShare2,
 } from "react-icons/lu";
 import { IBook } from "@/types/book";
 import AddToShelf from "./add-to-shelf";

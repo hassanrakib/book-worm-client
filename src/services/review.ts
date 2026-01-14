@@ -6,3 +6,9 @@ export const getReviews = async () => {
     cache: "no-store",
   });
 };
+
+export const getApprovedReviewsByBookId = async (bookId: string) => {
+  return fetchFromApi<IReview[]>(`/reviews/${bookId}`, {
+    cache: "no-store",
+  });
+};
