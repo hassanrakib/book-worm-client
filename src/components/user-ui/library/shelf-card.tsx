@@ -10,13 +10,13 @@ import {
   Group,
 } from "@chakra-ui/react";
 import { LuPlay, LuCheck, LuPlus, LuMinus } from "react-icons/lu";
-import { IShelf } from "@/types/shelf";
+import { IShelf, TShelfType } from "@/types/shelf";
 import { ReadingProgress } from "./reading-progress";
 
 interface ShelfCardProps {
   item: IShelf;
-  onUpdateStatus: (id: string, newStatus: string) => void;
-  onUpdateProgress?: (id: string, newPages: number) => void;
+  onUpdateStatus: (id: string, currentStatus: TShelfType, newStatus: TShelfType) => void;
+  onUpdateProgress?: (id: string, currentShelfType: TShelfType, newPages: number) => void;
 }
 
 const ShelfCard = ({
@@ -64,7 +64,7 @@ const ShelfCard = ({
               <Group attached width="full">
                 <IconButton
                   onClick={() =>
-                    onUpdateProgress?.(_id, Math.max(0, pagesRead - 10))
+                    onUpdateProgress?.(_id, shelf, Math.max(0, pagesRead - 5))
                   }
                   aria-label="Decrease progress"
                 >
@@ -77,7 +77,8 @@ const ShelfCard = ({
                   onClick={() =>
                     onUpdateProgress?.(
                       _id,
-                      Math.min(book.totalPages, pagesRead + 10)
+                      shelf,
+                      Math.min(book.totalPages, pagesRead + 5)
                     )
                   }
                   aria-label="Increase progress"
@@ -95,7 +96,7 @@ const ShelfCard = ({
                 size="xs"
                 width="full"
                 colorPalette="yellow"
-                onClick={() => onUpdateStatus(_id, "currently_reading")}
+                onClick={() => onUpdateStatus(_id, shelf, "currently_reading")}
               >
                 <LuPlay /> Start Reading
               </Button>
@@ -106,14 +107,14 @@ const ShelfCard = ({
                 width="full"
                 variant="subtle"
                 colorPalette="green"
-                onClick={() => onUpdateStatus(_id, "read")}
+                onClick={() => onUpdateStatus(_id, shelf, "read")}
               >
                 <LuCheck /> Mark as Read
               </Button>
             )}
             {shelf === "read" && (
               <Text fontSize="2xs" color="green.600" fontWeight="bold">
-                ✓ COMPLETED
+                ✓ READ
               </Text>
             )}
           </HStack>
