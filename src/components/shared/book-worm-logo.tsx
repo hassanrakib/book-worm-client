@@ -19,7 +19,7 @@ const BookWormLogo = (props: Omit<ChakraLinkProps, "href">) => {
       justifyContent="center"
       {...props}
     >
-      <NextLink href="/">
+      <NextLink href="/home">
         <Flex alignItems="center" cursor="pointer" color="yellow.600">
           <LuBookMarked size={24} />
           <Text

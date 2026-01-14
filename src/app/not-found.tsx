@@ -58,7 +58,7 @@ export default function NotFound() {
             It seems the book you are looking for has been checked out or moved to a different shelf.
           </Text>
 
-          <Link href="/" passHref>
+          <Link href="/home" passHref>
             <StyledButton 
               variant="solid" 
               colorPalette="yellow" 
